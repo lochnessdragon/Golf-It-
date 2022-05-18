@@ -1,3 +1,9 @@
+# Golf It!
+
+[![Run on Repl.it](https://repl.it/badge/github/lochnessdragon/Golf-It-)](https://repl.it/github/lochnessdragon/Golf-It-)
+
+A small golf game for the web.
+
 # Vite ⚡
 
 > Next Generation Frontend Tooling
