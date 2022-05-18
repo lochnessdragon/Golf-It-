@@ -1,11 +1,19 @@
 import '../css/style.css'
 
+// rendering
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 // debug tools
 import * as Stats from 'stats.js';
 import * as dat from 'dat.gui';
+
+// physics
+import * as phys from 'ammo.js';
+
+// entities
+import { Player } from './player.ts';
 
 const scene = new THREE.Scene();
 
@@ -76,10 +84,13 @@ spotlight.position.set(0, 10, 0);
 scene.add(spotlight);
 
 debug_gui.remember(spotlight);
-var light_rot_folder = debug_gui.addFolder("Light Rotation");
-light_rot_folder.add(spotlight.position, "x", 0, 360, 1)
-light_rot_folder.add(spotlight.position, "z", 0, 360, 1)
-light_rot_folder.add(spotlight.position, "y", 0, 360, 1)
+var light_rot_folder = debug_gui.addFolder("Light Position");
+light_rot_folder.add(spotlight.position, "x", 0, 360, 1);
+light_rot_folder.add(spotlight.position, "z", 0, 360, 1);
+light_rot_folder.add(spotlight.position, "y", 0, 360, 1);
+
+const player = new Player(scene, new THREE.Color(1.0, 0, 0));
+player.setupDatGUI(debug_gui);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
