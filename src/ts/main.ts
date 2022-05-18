@@ -1,8 +1,11 @@
-import './style.css'
+import '../css/style.css'
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// debug tools
+import * as Stats from 'stats.js';
+import * as dat from 'dat.gui';
 
 const scene = new THREE.Scene();
 
@@ -16,12 +19,23 @@ renderer.toneMappingExposure = 1;
 renderer.setClearColor(0x303030, 1);
 document.body.appendChild( renderer.domElement );
 
+// ---- DEBUG ----
+
+// profiling
+var stats = new Stats();
+stats.showPanel(1);
+document.body.appendChild(stats.dom);
+
+var debug_gui = new dat.GUI();
+
+// ---- END DEBUG ----
+
 const loader = new GLTFLoader();
 
 // Load a glTF resource
 loader.load(
 	// resource URL
-	'assets/Models/GLTF format/open.glb',
+	'/assets/Kenney Tiles/Models/GLTF format/open.glb',
 	// called when the resource is loaded
 	function ( gltf ) {
 
@@ -55,6 +69,12 @@ const spotlight = new THREE.SpotLight(0xffffff);
 spotlight.position.set(0, 10, 0);
 scene.add(spotlight);
 
+debug_gui.remember(spotlight);
+var light_rot_folder = debug_gui.addFolder("Light Rotation");
+light_rot_folder.add(spotlight.position, "x", 0, 360, 1)
+light_rot_folder.add(spotlight.position, "z", 0, 360, 1)
+light_rot_folder.add(spotlight.position, "y", 0, 360, 1)
+
 const controls = new OrbitControls(camera, renderer.domElement);
 
 camera.position.z = 5;
@@ -72,8 +92,10 @@ function onWindowResize() {
 function animate() {
 	requestAnimationFrame( animate );
 
+	stats.begin();
 	controls.update();
 	
 	renderer.render( scene, camera );
+	stats.end();
 }
 animate();
