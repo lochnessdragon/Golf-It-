@@ -9,7 +9,7 @@ export class Player {
 		constructor(scene: THREE.Scene, color: THREE.Color) {
 			// create golf ball mesh
 			const geometry = new THREE.SphereGeometry(1, 32, 16 );
-			this.material = new THREE.MeshPhysicalMaterial({ color: color });
+			this.material = new THREE.MeshPhysicalMaterial({ color: color, clearcoat: 1.0, roughness: 0 });
 
 			this.model = new THREE.Mesh(geometry, this.material);
 

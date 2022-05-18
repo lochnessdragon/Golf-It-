@@ -3,6 +3,7 @@ import '../css/style.css'
 // rendering
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // debug tools
@@ -76,6 +77,7 @@ const loader = new GLTFLoader();
 // 	})(x);
 // }
 
+// lighting
 const ambient_light = new THREE.AmbientLight(0x404040); // soft white light
 scene.add(ambient_light);
 
@@ -89,8 +91,43 @@ light_rot_folder.add(spotlight.position, "x", 0, 360, 1);
 light_rot_folder.add(spotlight.position, "z", 0, 360, 1);
 light_rot_folder.add(spotlight.position, "y", 0, 360, 1);
 
+// environment map
+const pmremGen = new THREE.PMREMGenerator(renderer);
+pmremGen.compileEquirectangularShader();
+
 const player = new Player(scene, new THREE.Color(1.0, 0, 0));
 player.setupDatGUI(debug_gui);
+
+const groundGeo = new THREE.PlaneGeometry(5, 5);
+const groundMat = new THREE.MeshStandardMaterial({color: 0x09ff09});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.position.set(0, -3, 0);
+ground.rotation.set(-Math.PI/2, 0, 0);
+scene.add(ground);
+
+/*
+let exrCubeRenderTarget: THREE.WebGLRenderTarget
+let exrBackground : THREE.Texture;
+let envMap : THREE.Texture | null;
+
+new EXRLoader().load(
+	"assets/hdri/drackenstein_quarry_1k.exr",
+	//"https://threejs.org/examples/textures/piz_compressed.exr", 
+	function(texture, textureData) {
+		exrCubeRenderTarget = pmremGen.fromEquirectangular(texture);
+    exrBackground = exrCubeRenderTarget.texture;
+    envMap = exrCubeRenderTarget ? exrCubeRenderTarget.texture : null;
+	
+		// setup the correct backgrounds
+		//scene.background = exrBackground;
+
+		player.material.envMap = envMap;
+		player.material.needsUpdate = true;
+		
+		// get rid of the loaded texture because we've used it
+    texture.dispose();
+	}
+);*/
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -98,12 +135,26 @@ camera.position.z = 5;
 controls.update();
 
 window.addEventListener('resize', onWindowResize, false);
+window.addEventListener('keydown', onKeyDown, false);
 
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onKeyDown(event) {
+	const key = event.key;
+	switch (key) {
+		case " ":
+			// space
+			// play/reset simulation
+			console.log("Playing/pausing simulation");
+			break;
+		default:
+			break;
+	}
 }
 
 function animate() {
