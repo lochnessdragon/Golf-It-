@@ -16,6 +16,14 @@ import * as phys from 'ammo.js';
 // entities
 import { Player } from './player.ts';
 
+enum GameState {
+	PLAY,
+	PAUSE
+};
+
+phys.Ammo().then((ammo: phys.Ammo) => {
+let state: GameState = GameState.PAUSE;
+
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -129,6 +137,9 @@ new EXRLoader().load(
 	}
 );*/
 
+// physics
+
+// controls
 const controls = new OrbitControls(camera, renderer.domElement);
 
 camera.position.z = 5;
@@ -144,26 +155,27 @@ function onWindowResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function onKeyDown(event) {
-	const key = event.key;
-	switch (key) {
-		case " ":
-			// space
-			// play/reset simulation
-			console.log("Playing/pausing simulation");
-			break;
-		default:
-			break;
+	function onKeyDown(event) {
+		const key = event.key;
+		switch (key) {
+			case " ":
+				// space
+				// play/reset simulation
+				console.log("Playing/pausing simulation");
+				break;
+			default:
+				break;
+		}
 	}
-}
 
-function animate() {
-	requestAnimationFrame(animate);
+	function animate() {
+		requestAnimationFrame(animate);
 
-	stats.begin();
-	controls.update();
+		stats.begin();
+		controls.update();
 
-	renderer.render(scene, camera);
-	stats.end();
-}
-animate();
+		renderer.render(scene, camera);
+		stats.end();
+	}
+	animate();
+});
